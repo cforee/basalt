@@ -7,29 +7,6 @@ World = function(map_name) {
   this.map_name = map_name;
 };
 
-KEYS = {
-  '38': {
-    human_friendly_name: 'up arrow',
-    action: 'move',
-    opts: { direction: 'n' }
-   },
-  '39': {
-    human_friendly_name: 'right arrow',
-    action: 'move',
-    opts: { direction: 'e' }
-   },
-  '40': {
-    human_friendly_name: 'down arrow',
-    action: 'move',
-    opts: { direction: 's' }
-   },
-  '37': {
-    human_friendly_name: 'left arrow',
-    action: 'move',
-    opts: { direction: 'w' }
-   },
-};
-
 Basalt = function() {
   var self = this;
   self.player = new Sprite(5,5);
@@ -56,9 +33,9 @@ Basalt = function() {
   setInterval(function() {
     var pressed_key_index = self.keys.pressed.length;
     while(pressed_key_index--) {
-      if (KEYS[self.keys.pressed[pressed_key_index]]) {
-        action = 'self.actions.' + KEYS[self.keys.pressed[pressed_key_index]].action;
-        opts = KEYS[self.keys.pressed[pressed_key_index]].opts;
+      if (self.keys[self.keys.pressed[pressed_key_index]]) {
+        action = 'self.actions.' + self.keys[self.keys.pressed[pressed_key_index]].action;
+        opts = self.keys[self.keys.pressed[pressed_key_index]].opts;
         eval(action)(opts);
       }
     }
