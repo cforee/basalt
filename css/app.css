@@ -14,15 +14,31 @@ app {
 app .map {
   display: block;
   position: absolute;
-  width: 500px;
-  height: 500px;
   overflow: hidden;
-  background: #000;
+  background: #f3f3f3;
+  z-index: 100;
 }
 
 app .map .terrain {
+  display: block;
+  position: absolute;
+  z-index: 200;
+}
+
+app .map .terrain .block {
   display: inline-block;
   width: 55px;
   height: 55px;
 }
 
+app .map .entities {
+  display: block;
+  position: absolute;
+  z-index: 300;
+}
+
+app .map .entities .block {
+  display: inline-block;
+  width: 55px;
+  height: 55px;
+}

@@ -19,6 +19,13 @@ OBJ = {
     background_color: '#66ff66',
     walkable: true,
     taklable: false
+  },
+  'W': {
+    name: 'wall',
+    asset: '',
+    background_color: '#888888',
+    walkable: true,
+    taklable: false
   }
 
 }

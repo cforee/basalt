@@ -1,8 +1,12 @@
 $app = null;
 $map = null;
+$terrain = null;
+$entities = null;
 MOVE_AMOUNT = 1;
 BLOCK_WIDTH = 55;
 BLOCK_HEIGHT = 55;
+MAP_WIDTH = 0;
+MAP_HEIGHT = 0;
 
 Sprite = function(starting_block_x, starting_block_y) {
   this.block_x = starting_block_x;
@@ -13,7 +17,7 @@ World = function(map_name) {
   var self = this;
   self.map_data = WORLDS.find(o => o.name === map_name);
   self.terrain_map_name = '../assets/mapfiles/' + self.map_data.map_terrain_id + '.txt'
-  self.entity_map_name = '../assets/mapfiles/' + self.map_data.map_terrain_id + '.txt'
+  self.entity_map_name = '../assets/mapfiles/' + self.map_data.map_entity_id + '.txt'
   self.top_x = 0;
   self.top_y = 0;
 
@@ -22,24 +26,36 @@ World = function(map_name) {
     $map = $('<div class="map"></div>').appendTo($app);
     $.get(self.terrain_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      $map.css({ width: rows[0].length * BLOCK_WIDTH, height: rows.length * BLOCK_HEIGHT });
+      MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
+      MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
+      $terrain = $('<div class="terrain"></div>').appendTo($map);
+      $map.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
+      $terrain.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
       for (var y = 0; y < rows.length; y++) {
         if (rows[y].length > 1) {
           for (var x = 0; x < rows[y].length; x++) {
-            this_terrain = OBJ[rows[y][x]];
-            $map.append('<div class="terrain ' + '_' + this_terrain.name + '" style="background: ' + this_terrain.background_color + ';"></div>');
+            var block = OBJ[rows[y][x]];
+            if (block) {
+              $terrain.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';"></div>');
+            }
           }
         }
       }
     });
     $.get(self.entity_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      $map.css({ width: rows[0].length * BLOCK_WIDTH, height: rows.length * BLOCK_HEIGHT });
+      MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
+      MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
+      $entities = $('<div class="entities"></div>').appendTo($map);
+      $map.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
+      $entities.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
       for (var y = 0; y < rows.length; y++) {
         if (rows[y].length > 1) {
           for (var x = 0; x < rows[y].length; x++) {
-            this_entity = OBJ[rows[y][x]];
-            $map.append('<div class="terrain ' + '_' + this_entity.name + '" style="background: ' + this_entity.background_color + ';"></div>');
+            var block = OBJ[rows[y][x]];
+            if (block) {
+              $entities.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';"></div>');
+            }
           }
         }
       }
@@ -113,5 +129,6 @@ Basalt = function() {
 };
 
 $(function() {
+  $.ajaxSetup({ cache: false })
   app = new Basalt();
 });
