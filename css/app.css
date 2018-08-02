@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+app {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+app .map {
+  display: block;
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  overflow: hidden;
+  background: #000;
+}
+
+app .map .terrain {
+  display: inline-block;
+  width: 55px;
+  height: 55px;
+}
+
