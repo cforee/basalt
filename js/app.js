@@ -11,20 +11,21 @@ MAP_HEIGHT = 0;
 Sprite = function(starting_block_x, starting_block_y) {
   this.block_x = starting_block_x;
   this.block_y = starting_block_y;
+
+
 };
 
 World = function(map_name) {
-  var self = this;
-  self.map_data = WORLDS.find(o => o.name === map_name);
-  self.terrain_map_name = '../assets/mapfiles/' + self.map_data.map_terrain_id + '.txt'
-  self.entity_map_name = '../assets/mapfiles/' + self.map_data.map_entity_id + '.txt'
-  self.top_x = 0;
-  self.top_y = 0;
+  this.map_data = WORLDS.find(o => o.name === map_name);
+  this.terrain_map_name = '../assets/mapfiles/' + this.map_data.map_terrain_id + '.txt'
+  this.entity_map_name = '../assets/mapfiles/' + this.map_data.map_entity_id + '.txt'
+  this.top_x = 0;
+  this.top_y = 0;
 
   this.init = function() {
     $app = $('app');
     $map = $('<div class="map"></div>').appendTo($app);
-    $.get(self.terrain_map_name, function(data) {
+    $.get(this.terrain_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
       MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
       MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
@@ -42,7 +43,7 @@ World = function(map_name) {
         }
       }
     });
-    $.get(self.entity_map_name, function(data) {
+    $.get(this.entity_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
       MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
       MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
@@ -65,20 +66,17 @@ World = function(map_name) {
   this.move = function(top_x, top_y) {
     this.top_x += top_x;
     this.top_y += top_y;
-    $map.css({
-      left: this.top_x,
-      top: this.top_y
-    });
+    $map.css({ left: this.top_x, top: this.top_y });
   };
 };
 
 Basalt = function() {
   var self = this;
-  self.player = new Sprite(5,5);
-  self.world = new World('starting_area');
-  self.keys = $.extend(KEYS, { pressed: [] });
+  this.player = new Sprite(5,5);
+  this.world = new World('starting_area');
+  this.keys = $.extend(KEYS, { pressed: [] });
 
-  self.actions = {
+  this.actions = {
     move: function(opts) {
       switch(opts.direction) {
         case 'n':
@@ -97,17 +95,17 @@ Basalt = function() {
     },
   };
 
-  self.register_keypress = function(key_code) {
-    return ($.inArray(key_code, self.keys.pressed) < 0) ? self.keys.pressed.push(key_code) : false;
+  this.register_keypress = function(key_code) {
+    return ($.inArray(key_code, this.keys.pressed) < 0) ? this.keys.pressed.push(key_code) : false;
   };
 
-  self.unregister_keypress = function(key_code) {
-    while (self.keys.pressed.indexOf(key_code) >= 0) {
-      self.keys.pressed.splice(self.keys.pressed.indexOf(key_code), 1);
+  this.unregister_keypress = function(key_code) {
+    while (this.keys.pressed.indexOf(key_code) >= 0) {
+      this.keys.pressed.splice(this.keys.pressed.indexOf(key_code), 1);
     }
   };
 
-  self.world.init();
+  this.world.init();
 
   // GAME LOOP
   setInterval(function() {
