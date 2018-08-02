@@ -2,95 +2,41 @@ $app = null;
 $map = null;
 $terrain = null;
 $entities = null;
-MOVE_AMOUNT = 1;
+MOVE_AMOUNT = 5;
 BLOCK_WIDTH = 55;
 BLOCK_HEIGHT = 55;
-MAP_WIDTH = 0;
-MAP_HEIGHT = 0;
-
-Sprite = function(starting_block_x, starting_block_y) {
-  this.block_x = starting_block_x;
-  this.block_y = starting_block_y;
-
-
-};
-
-World = function(map_name) {
-  this.map_data = WORLDS.find(o => o.name === map_name);
-  this.terrain_map_name = '../assets/mapfiles/' + this.map_data.map_terrain_id + '.txt'
-  this.entity_map_name = '../assets/mapfiles/' + this.map_data.map_entity_id + '.txt'
-  this.top_x = 0;
-  this.top_y = 0;
-
-  this.init = function() {
-    $app = $('app');
-    $map = $('<div class="map"></div>').appendTo($app);
-    $.get(this.terrain_map_name, function(data) {
-      rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
-      MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
-      $terrain = $('<div class="terrain"></div>').appendTo($map);
-      $map.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
-      $terrain.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
-      for (var y = 0; y < rows.length; y++) {
-        if (rows[y].length > 1) {
-          for (var x = 0; x < rows[y].length; x++) {
-            var block = OBJ[rows[y][x]];
-            if (block) {
-              $terrain.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';"></div>');
-            }
-          }
-        }
-      }
-    });
-    $.get(this.entity_map_name, function(data) {
-      rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
-      MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
-      $entities = $('<div class="entities"></div>').appendTo($map);
-      $map.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
-      $entities.css({ width: MAP_WIDTH, height: MAP_HEIGHT });
-      for (var y = 0; y < rows.length; y++) {
-        if (rows[y].length > 1) {
-          for (var x = 0; x < rows[y].length; x++) {
-            var block = OBJ[rows[y][x]];
-            if (block) {
-              $entities.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';"></div>');
-            }
-          }
-        }
-      }
-    });
-  };
-
-  this.move = function(top_x, top_y) {
-    this.top_x += top_x;
-    this.top_y += top_y;
-    $map.css({ left: this.top_x, top: this.top_y });
-  };
-};
+SPRITE_FRAME_CYCLE_RATE = 7;
 
 Basalt = function() {
   var self = this;
-  this.player = new Sprite(5,5);
+  this.player = new Sprite('player');
   this.world = new World('starting_area');
   this.keys = $.extend(KEYS, { pressed: [] });
+  this.player_step_count = 0;
 
   this.actions = {
     move: function(opts) {
       switch(opts.direction) {
         case 'n':
           self.world.move(0, MOVE_AMOUNT);
+          self.player_step_count++;
           break;
         case 'e':
           self.world.move(-MOVE_AMOUNT, 0);
+          self.player_step_count++;
           break;
         case 's':
           self.world.move(0, -MOVE_AMOUNT);
+          self.player_step_count++;
           break;
         case 'w':
           self.world.move(MOVE_AMOUNT, 0);
+          self.player_step_count++;
           break;
+      }
+      if (self.player_step_count >= SPRITE_FRAME_CYCLE_RATE) {
+        self.player.cycle_frames();
+        self.player_step_count = 0;
       }
     },
   };
@@ -106,6 +52,7 @@ Basalt = function() {
   };
 
   this.world.init();
+  this.player.init();
 
   // GAME LOOP
   setInterval(function() {
