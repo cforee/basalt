@@ -31,6 +31,7 @@ app .map {
   overflow: hidden;
   background: #f3f3f3;
   z-index: 100;
+  font-size: 12px;
 }
 
 app .map .terrain {

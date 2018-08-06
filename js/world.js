@@ -13,20 +13,25 @@ World = function(map_name) {
   this.entity_map_name = '../assets/mapfiles/' + this.map_data.map_entity_id + '.txt'
   this.pixel_x = 0;
   this.pixel_y = 0;
-  this.MAP_WIDTH = null;
-  this.MAP_HEIGHT = null;
+  this.MAP_PIXEL_WIDTH = 0;
+  this.MAP_PIXEL_HEIGHT = 0;
+  this.MAP_BLOCK_WIDTH = 0;
+  this.MAP_BLOCK_HEIGHT = 0;
   this.$elem = null;
 
   this.init = function() {
+    w = self;
     $app = $('app');
     self.$elem = $('<div class="map"></div>').appendTo($app);
     $.get(this.terrain_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      self.MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
-      self.MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
+      self.MAP_BLOCK_HEIGHT = rows.length;
+      self.MAP_BLOCK_WIDTH = rows[0].length;
+      self.MAP_PIXEL_HEIGHT = rows.length * BLOCK_HEIGHT;
+      self.MAP_PIXEL_WIDTH = rows[0].length * BLOCK_WIDTH;
       $terrain = $('<div class="terrain"></div>').appendTo(self.$elem);
-      self.$elem.css({ width: self.MAP_WIDTH, height: self.MAP_HEIGHT });
-      $terrain.css({ width: self.MAP_WIDTH, height: self.MAP_HEIGHT });
+      self.$elem.css({ width: self.MAP_PIXEL_WIDTH, height: self.MAP_PIXEL_HEIGHT });
+      $terrain.css({ width: self.MAP_PIXEL_WIDTH, height: self.MAP_PIXEL_HEIGHT });
       for (var y = 0; y < rows.length; y++) {
         if (rows[y].length > 1) {
           for (var x = 0; x < rows[y].length; x++) {
@@ -40,23 +45,24 @@ World = function(map_name) {
     });
     $.get(this.entity_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
-      self.MAP_HEIGHT = rows.length * BLOCK_HEIGHT;
-      self.MAP_WIDTH = rows[0].length * BLOCK_WIDTH;
       $entities = $('<div class="entities"></div>').appendTo(self.$elem);
-      self.$elem.css({ width: self.MAP_WIDTH, height: self.MAP_HEIGHT });
-      $entities.css({ width: self.MAP_WIDTH, height: self.MAP_HEIGHT });
+      self.$elem.css({ width: self.MAP_PIXEL_WIDTH, height: self.MAP_PIXEL_HEIGHT });
+      $entities.css({ width: self.MAP_PIXEL_WIDTH, height: self.MAP_PIXEL_HEIGHT });
       for (var y = 0; y < rows.length; y++) {
         if (rows[y].length > 1) {
+          m_row = []
           for (var x = 0; x < rows[y].length; x++) {
             var block = OBJ[rows[y][x]];
+            m_row.push(block);
             if (block) {
-              $entities.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';" data-x="' + x + '" data-y="' + y + '"></div>');
+              $entities.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';" data-x="' + x + '" data-y="' + y + '">' + x + ', ' + y + '</div>');
             }
           }
+          ENTITY_MAP.push(m_row);
         }
       }
     });
-    this.center_to_viewport();
+    self.center_to_viewport();
   };
 
   this.redraw = function() {
@@ -67,10 +73,8 @@ World = function(map_name) {
   }
 
   this.center_to_viewport = function() {
-    console.log("GOT HERE");
-    console.log(self.MAP_WIDTH);
-    this.pixel_x = 0 - (self.MAP_WIDTH / 2);
-    this.pixel_y = 0 - (self.MAP_HEIGHT / 2);
+    this.pixel_x = ($(window).innerWidth() / 2) - (self.MAP_PIXEL_WIDTH / 2) - (BLOCK_WIDTH / 2);
+    this.pixel_y = ($(window).innerHeight() / 2) - (self.MAP_PIXEL_HEIGHT / 2);
     this.redraw();
   }
 

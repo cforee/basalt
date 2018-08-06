@@ -5,6 +5,7 @@ $entities = null;
 MOVE_AMOUNT = 5;
 BLOCK_WIDTH = 55;
 BLOCK_HEIGHT = 55;
+ENTITY_MAP = [];
 SPRITE_FRAME_CYCLE_RATE = 7;
 
 Basalt = function() {
@@ -18,20 +19,32 @@ Basalt = function() {
     move: function(opts) {
       switch(opts.direction) {
         case 'n':
-          self.world.move(0, MOVE_AMOUNT);
-          self.player_step_count++;
+          if (!self.player.is_collision(0, -MOVE_AMOUNT)) {
+            self.world.move(0, MOVE_AMOUNT);
+            self.player.move(0, -MOVE_AMOUNT);
+            self.player_step_count++;
+          }
           break;
         case 'e':
-          self.world.move(-MOVE_AMOUNT, 0);
-          self.player_step_count++;
+          if (!self.player.is_collision(MOVE_AMOUNT, 0)) {
+            self.world.move(-MOVE_AMOUNT, 0);
+            self.player.move(MOVE_AMOUNT, 0);
+            self.player_step_count++;
+          }
           break;
         case 's':
-          self.world.move(0, -MOVE_AMOUNT);
-          self.player_step_count++;
+          if (!self.player.is_collision(0, MOVE_AMOUNT)) {
+            self.world.move(0, -MOVE_AMOUNT);
+            self.player.move(0, MOVE_AMOUNT);
+            self.player_step_count++;
+          }
           break;
         case 'w':
-          self.world.move(MOVE_AMOUNT, 0);
-          self.player_step_count++;
+          if (!self.player.is_collision(-MOVE_AMOUNT, 0)) {
+            self.world.move(MOVE_AMOUNT, 0);
+            self.player.move(-MOVE_AMOUNT, 0);
+            self.player_step_count++;
+          }
           break;
       }
       if (self.player_step_count >= SPRITE_FRAME_CYCLE_RATE) {
@@ -53,6 +66,8 @@ Basalt = function() {
 
   this.world.init();
   this.player.init();
+  this.player.block_x = parseInt((this.world.MAP_PIXEL_WIDTH / 2) / BLOCK_WIDTH);
+  this.player.block_y = parseInt((this.world.MAP_PIXEL_HEIGHT / 2) / BLOCK_HEIGHT);
 
   // GAME LOOP
   setInterval(function() {
@@ -74,6 +89,6 @@ Basalt = function() {
 };
 
 $(function() {
-  $.ajaxSetup({ cache: false })
+  $.ajaxSetup({ cache: false, async: false })
   app = new Basalt();
 });

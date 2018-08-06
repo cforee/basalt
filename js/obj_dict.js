@@ -24,7 +24,7 @@ OBJ = {
     name: 'wall',
     asset: '',
     background_color: '#888888',
-    walkable: true,
+    walkable: false,
     taklable: false
   }
 
