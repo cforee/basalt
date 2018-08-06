@@ -6,6 +6,8 @@ MOVE_AMOUNT = 5;
 BLOCK_WIDTH = 55;
 BLOCK_HEIGHT = 55;
 ENTITY_MAP = [];
+BOUNDS_BLOCK_X = null;
+BOUNDS_BLOCK_Y = null
 SPRITE_FRAME_CYCLE_RATE = 7;
 
 Basalt = function() {

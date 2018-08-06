@@ -58,10 +58,12 @@ World = function(map_name) {
               $entities.append('<div class="block ' + '_' + block.name + '" style="background: ' + block.background_color + ';" data-x="' + x + '" data-y="' + y + '">' + x + ', ' + y + '</div>');
             }
           }
+          BOUNDS_BLOCK_X = m_row.length;
           ENTITY_MAP.push(m_row);
         }
       }
     });
+    BOUNDS_BLOCK_Y = ENTITY_MAP.length - 1;
     self.center_to_viewport();
   };
 

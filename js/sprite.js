@@ -40,20 +40,23 @@ Sprite = function(name) {
     var block_x2 = parseInt(((temp_pixel_x - (MOVE_AMOUNT / 2)) + BLOCK_WIDTH) / BLOCK_WIDTH);
     var block_y2 = parseInt(((temp_pixel_y - (MOVE_AMOUNT / 2)) + BLOCK_HEIGHT) / BLOCK_HEIGHT);
 
-    if (
-      (!ENTITY_MAP[block_y1][block_x1].walkable) ||
-      (!ENTITY_MAP[block_y2][block_x2].walkable) ||
-      (!ENTITY_MAP[block_y1][block_x2].walkable) ||
-      (!ENTITY_MAP[block_y2][block_x1].walkable)
-    ) { return true; }
+    // handle bounds
+    if ((block_x2 < 1) || (block_y2 < 1)) { return true; }
+    if ((block_x2 >= BOUNDS_BLOCK_X) || (block_y1 >= BOUNDS_BLOCK_Y)) { return true; }
+
+    // handle non-traversable entities
+    return (
+      (ENTITY_MAP[block_y1][block_x1].walkable) &&
+      (ENTITY_MAP[block_y2][block_x2].walkable) &&
+      (ENTITY_MAP[block_y1][block_x2].walkable) &&
+      (ENTITY_MAP[block_y2][block_x1].walkable)
+    ) ? false : true;
 
   }
 
   this.move = function(distance_x, distance_y) {
-    var temp_x = this.relative_pixel_x + distance_x;
-    var temp_y = this.relative_pixel_y + distance_y;
-    this.relative_pixel_x = temp_x;
-    this.relative_pixel_y = temp_y;
+    this.relative_pixel_x += distance_x;
+    this.relative_pixel_y += distance_y;
     this.set_block();
   }
 
