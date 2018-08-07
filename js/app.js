@@ -12,7 +12,7 @@ SPRITE_FRAME_CYCLE_RATE = 7;
 
 Basalt = function() {
   var self = this;
-  this.player = new Sprite('player');
+  this.player = new Sprite('player', '/assets/entities/bunny/', 6);
   this.world = new World('starting_area');
   this.keys = $.extend(KEYS, { pressed: [] });
   this.player_step_count = 0;
@@ -24,6 +24,7 @@ Basalt = function() {
           if (!self.player.is_collision(0, -MOVE_AMOUNT)) {
             self.world.move(0, MOVE_AMOUNT);
             self.player.move(0, -MOVE_AMOUNT);
+            self.player.set_direction('n');
             self.player_step_count++;
           }
           break;
@@ -31,6 +32,7 @@ Basalt = function() {
           if (!self.player.is_collision(MOVE_AMOUNT, 0)) {
             self.world.move(-MOVE_AMOUNT, 0);
             self.player.move(MOVE_AMOUNT, 0);
+            self.player.set_direction('e');
             self.player_step_count++;
           }
           break;
@@ -38,6 +40,7 @@ Basalt = function() {
           if (!self.player.is_collision(0, MOVE_AMOUNT)) {
             self.world.move(0, -MOVE_AMOUNT);
             self.player.move(0, MOVE_AMOUNT);
+            self.player.set_direction('s');
             self.player_step_count++;
           }
           break;
@@ -45,6 +48,7 @@ Basalt = function() {
           if (!self.player.is_collision(-MOVE_AMOUNT, 0)) {
             self.world.move(MOVE_AMOUNT, 0);
             self.player.move(-MOVE_AMOUNT, 0);
+            self.player.set_direction('w');
             self.player_step_count++;
           }
           break;

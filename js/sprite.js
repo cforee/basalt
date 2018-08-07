@@ -1,21 +1,30 @@
-Sprite = function(name) {
+Sprite = function(name, sprite_path, num_frames) {
   this.name = name;
   this.relative_pixel_x = null;
   this.relative_pixel_y = null;
   this.block_x = null;
   this.block_y = null;
   this.$elem = null;
+  this.SPRITE_PATH = sprite_path || '';
+  this.SPRITE_FILE_EXTENSION = 'png';
+  this.direction = 's';
+  this.FRAMES_START = 1;
+  this.FRAMES_END = num_frames || 8;
+  this.frame_num = this.FRAMES_START;
 
-  this.init = function() {
+
+  this.init = function(sprite_path, num_frames) {
+    this.SPRITE_PATH = this.SPRITE_PATH || sprite_path;
+    this.FRAMES_END = this.FRAMES_END || num_frames;
     this.$elem = $('<div class="sprite _' + name + '"></div>').appendTo($app);
     this.center_to_viewport();
   }
 
-  this.redraw = function() {
-
-  }
-
   this.cycle_frames = function() {
+    if (this.frame_num > this.FRAMES_END) { this.frame_num = this.FRAMES_START };
+    frame_path = this.SPRITE_PATH + this.direction + '_00' + this.frame_num + '0.' + this.SPRITE_FILE_EXTENSION;
+    this.$elem.css('background-image', 'url("' + frame_path + '")');
+    this.frame_num++;
   }
 
   this.center_to_viewport = function() {
@@ -27,6 +36,10 @@ Sprite = function(name) {
     this.$elem.css({ left: pixel_x, top: pixel_y });
   }
 
+  this.set_direction = function(direction) {
+    this.direction = direction;
+  }
+
   this.set_block = function() {
     this.block_x = parseInt(this.relative_pixel_x / BLOCK_WIDTH);
     this.block_y = parseInt(this.relative_pixel_y / BLOCK_HEIGHT);
@@ -35,8 +48,8 @@ Sprite = function(name) {
   this.is_collision = function(distance_x, distance_y) {
     var temp_pixel_x = this.relative_pixel_x + distance_x;
     var temp_pixel_y = this.relative_pixel_y + distance_y;
-    var block_x1 = parseInt((temp_pixel_x + MOVE_AMOUNT) / BLOCK_WIDTH);
-    var block_y1 = parseInt((temp_pixel_y + MOVE_AMOUNT) / BLOCK_HEIGHT);
+    var block_x1 = parseInt((temp_pixel_x + (MOVE_AMOUNT / 2)) / BLOCK_WIDTH);
+    var block_y1 = parseInt((temp_pixel_y + (MOVE_AMOUNT / 2)) / BLOCK_HEIGHT);
     var block_x2 = parseInt(((temp_pixel_x - (MOVE_AMOUNT / 2)) + BLOCK_WIDTH) / BLOCK_WIDTH);
     var block_y2 = parseInt(((temp_pixel_y - (MOVE_AMOUNT / 2)) + BLOCK_HEIGHT) / BLOCK_HEIGHT);
 

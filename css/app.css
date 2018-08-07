@@ -7,6 +7,7 @@ app {
   display: block;
   position: relative;
   overflow: hidden;
+  background: #000;
   width: 100%;
   height: 100%;
 }
@@ -22,14 +23,17 @@ app .sprite {
 app ._player {
   width: 55px;
   height: 55px;
-  background: #000;
+  background-color: transparent;
+  background-image: url('/assets/entities/bunny/n_0070.png');
+  background-repeat: no-repeat;
+  background-size: 55px 55px;
+
 }
 
 app .map {
   display: block;
   position: absolute;
   overflow: hidden;
-  background: #f3f3f3;
   z-index: 100;
   font-size: 12px;
 }
@@ -44,10 +48,14 @@ app .map .terrain .block {
   display: inline-block;
   width: 55px;
   height: 55px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 55px 55px;
 }
 
 app .map .entities {
   display: block;
+  background-color: transparent;
   position: absolute;
   z-index: 300;
 }
@@ -56,4 +64,7 @@ app .map .entities .block {
   display: inline-block;
   width: 55px;
   height: 55px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 55px 55px;
 }
