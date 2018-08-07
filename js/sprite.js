@@ -16,20 +16,21 @@ Sprite = function(name, sprite_path, num_frames) {
   this.init = function(sprite_path, num_frames) {
     this.SPRITE_PATH = this.SPRITE_PATH || sprite_path;
     this.FRAMES_END = this.FRAMES_END || num_frames;
-    this.$elem = $('<div class="sprite _' + name + '"></div>').appendTo($app);
+    this.$elem = $('<img class="sprite _' + name + '"/>').appendTo($app);
     this.center_to_viewport();
+    this.cycle_frames();
   }
 
   this.cycle_frames = function() {
     if (this.frame_num > this.FRAMES_END) { this.frame_num = this.FRAMES_START };
     frame_path = this.SPRITE_PATH + this.direction + '_00' + this.frame_num + '0.' + this.SPRITE_FILE_EXTENSION;
-    this.$elem.css('background-image', 'url("' + frame_path + '")');
+    this.$elem.attr('src', frame_path);
     this.frame_num++;
   }
 
   this.center_to_viewport = function() {
-    var pixel_x = ($(window).innerWidth() / 2) - (BLOCK_WIDTH / 2);
-    var pixel_y = ($(window).innerHeight() / 2) - (BLOCK_HEIGHT / 2);
+    var pixel_x = ($app.innerWidth() / 2) - (BLOCK_WIDTH / 2);
+    var pixel_y = ($app.innerHeight() / 2) - (BLOCK_HEIGHT / 2);
     var relative_position = $('.map').position();
     this.relative_pixel_x = pixel_x - parseInt(relative_position.left);
     this.relative_pixel_y = pixel_y - parseInt(relative_position.top);
