@@ -19,6 +19,10 @@ Basalt = function() {
   this.player_step_count = 0;
 
   this.actions = {
+    nothing: function() {
+      console.log("got here");
+      self.player.reset_frames();
+    },
     move: function(opts) {
       switch(opts.direction) {
         case 'n':
@@ -75,6 +79,7 @@ Basalt = function() {
     while (this.keys.pressed.indexOf(key_code) >= 0) {
       this.keys.pressed.splice(this.keys.pressed.indexOf(key_code), 1);
     }
+    if (this.keys.pressed.length == 0) { this.actions.nothing(); }
   };
 
   this.world.init();

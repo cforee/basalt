@@ -21,11 +21,19 @@ Sprite = function(name, sprite_path, num_frames) {
     this.cycle_frames();
   }
 
+  this.get_frame_path = function() {
+    return (this.SPRITE_PATH + this.direction + '_00' + this.frame_num + '0.' + this.SPRITE_FILE_EXTENSION);
+  }
+
   this.cycle_frames = function() {
     if (this.frame_num > this.FRAMES_END) { this.frame_num = this.FRAMES_START };
-    frame_path = this.SPRITE_PATH + this.direction + '_00' + this.frame_num + '0.' + this.SPRITE_FILE_EXTENSION;
-    this.$elem.attr('src', frame_path);
+    this.$elem.attr('src', this.get_frame_path());
     this.frame_num++;
+  }
+
+  this.reset_frames = function() {
+    this.frame_num = this.FRAMES_START;
+    this.$elem.attr('src', this.get_frame_path());
   }
 
   this.center_to_viewport = function() {
