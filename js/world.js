@@ -55,7 +55,7 @@ World = function(map_name) {
             var block = OBJ[rows[y][x]];
             m_row.push(block);
             if (block) {
-              $entities.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/entities/' + block.background_image + ');"></div>');
+              $entities.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/entities/' + block.background_image + '); background-color: ' + block.background_color + ';"></div>');
             }
           }
           BOUNDS_BLOCK_X = m_row.length;

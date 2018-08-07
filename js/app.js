@@ -3,13 +3,13 @@ $map = null;
 $terrain = null;
 $entities = null;
 MOVE_AMOUNT = 6;
-console.log(MOVE_AMOUNT);
 BLOCK_WIDTH = 55;
 BLOCK_HEIGHT = 55;
 ENTITY_MAP = [];
 BOUNDS_BLOCK_X = null;
 BOUNDS_BLOCK_Y = null
 SPRITE_FRAME_CYCLE_RATE = 7;
+ILLEGAL_COMBOS_LEN = ILLEGAL_COMBOS.length;
 
 Basalt = function() {
   var self = this;
@@ -62,6 +62,12 @@ Basalt = function() {
   };
 
   this.register_keypress = function(key_code) {
+    for (var i = 0; i < ILLEGAL_COMBOS_LEN; i++) {
+      this_combo = ILLEGAL_COMBOS[i];
+      if (this.keys.pressed.indexOf(this_combo[0]) && (target_index = this.keys.pressed.indexOf(this_combo[1]))) {
+        this.keys.pressed.splice(target_index, 1);
+      }
+    }
     return ($.inArray(key_code, this.keys.pressed) < 0) ? this.keys.pressed.push(key_code) : false;
   };
 
