@@ -9,7 +9,7 @@ Sprite = function(name, sprite_path, num_frames) {
   this.SPRITE_FILE_EXTENSION = 'png';
   this.direction = 's';
   this.FRAMES_START = 1;
-  this.FRAMES_END = num_frames || 8;
+  this.FRAMES_END = num_frames || 2;
   this.frame_num = this.FRAMES_START;
 
 
