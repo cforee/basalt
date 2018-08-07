@@ -45,6 +45,11 @@ Sprite = function(name, sprite_path, num_frames) {
     this.$elem.css({ left: pixel_x, top: pixel_y });
   }
 
+  this.get_viewport_offset = function() {
+    var eo = this.$elem.offset();
+    return { x: parseInt(eo.left - BLOCK_WIDTH), y: parseInt(eo.top - (BLOCK_HEIGHT / 2)) }
+  }
+
   this.set_direction = function(direction) {
     this.direction = direction;
   }
@@ -77,6 +82,7 @@ Sprite = function(name, sprite_path, num_frames) {
   }
 
   this.move = function(distance_x, distance_y) {
+    console.log("MOVING PLAYER!!");
     this.relative_pixel_x += distance_x;
     this.relative_pixel_y += distance_y;
     this.set_block();

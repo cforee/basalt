@@ -21,7 +21,6 @@ World = function(map_name) {
 
   this.init = function() {
     w = self;
-    $app = $('app');
     self.$elem = $('<div class="map"></div>').appendTo($app);
     $.get(this.terrain_map_name, function(data) {
       rows = $.map(data.split("\n"), function(datum) { if (datum.length > 0) return datum });
