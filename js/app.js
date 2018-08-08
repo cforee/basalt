@@ -11,7 +11,7 @@ BOUNDS_VIEWPORT_X = null;
 BOUNDS_VIEWPORT_Y = null;
 BOUNDS_BLOCK_X = null;
 BOUNDS_BLOCK_Y = null;
-MAX_AUTONAV_TRIES = 100;
+MAX_AUTONAV_TRIES = 1000;
 SPRITE_FRAME_CYCLE_RATE = 7;
 ILLEGAL_COMBOS_LEN = ILLEGAL_COMBOS.length;
 
@@ -35,23 +35,30 @@ Basalt = function() {
       // default action whewn no
       // action key is depressed
       self.player.resetFrames();
-      self.unregisterClick();
     },
+
     navigateToTap: function() {
-      var player_pos = { x: self.player.relative_pixel_x, y: self.player.relative_pixel_y };
-      var tap = { x: self.mouse.click.right.x, y: self.mouse.click.right.y };
-      console.log('tap location: ', tap);
-      console.log('player location: ', player_pos);
-      console.log("\n");
-      if (
-        (player_pos.x < (tap.x + BLOCK_WIDTH)) && (player_pos.x > (tap.x - BLOCK_WIDTH)) &&
-        (player_pos.y < (tap.y + BLOCK_HEIGHT)) && (player_pos.y > (tap.y - BLOCK_HEIGHT))
-      ) { console.log("MOVE COMPLETE!"); self.unregisterClick(); } else {
-        if (tap.x < player_pos.x)      { self.actions.move({ direction: 'w' }); }
-        else if (tap.x > player_pos.x) { self.actions.move({ direction: 'e' }); }
-        else if (tap.y < player_pos.y) { self.actions.move({ direction: 'n' }); }
-        else if (tap.y > player_pos.y) { self.actions.move({ direction: 's' }); }
+      var p = { x: self.player.relative_pixel_x, y: self.player.relative_pixel_y };
+      var tap = { x: self.mouse.click.right.x - (BLOCK_WIDTH / 2), y: self.mouse.click.right.y - (BLOCK_HEIGHT / 2) };
+
+      var at_target_x = (p.x > (tap.x - MOVE_AMOUNT)) && (p.x < (tap.x + MOVE_AMOUNT));
+      var at_target_y = (p.y > (tap.y - MOVE_AMOUNT)) && (p.y < (tap.y + MOVE_AMOUNT));
+
+      // base-case:
+      if (at_target_x && at_target_y) { return self.flushInput(); };
+
+      if (!at_target_x) {
+        // get to target x-axis
+        if (p.x < tap.x) { return self.registerKeypress(K.right); };
+        if (p.x > tap.x) { return self.registerKeypress(K.left); };
       }
+
+      if (!at_target_y) {
+        // get to target y-axis
+        if (p.y > tap.y) { return self.registerKeypress(K.up); };
+        if (p.y < tap.y) { return self.registerKeypress(K.down); };
+      }
+
     },
 
     move: function(opts) {
@@ -113,13 +120,18 @@ Basalt = function() {
     if (this.keys.pressed.length == 0) { this.actions.nothing(); }
   };
 
+  this.flushInput = function() {
+    this.keys.pressed = [];
+    this.unregisterClick();
+    return true;
+  }
+
   this.registerClick = function(e) {
     self.mouse.click.present = false;
-    console.log(e.target.parent);
-    self.mouse.click.right.x = parseInt(e.pageX - VIEWPORT_OFFSET.x)
-    self.mouse.click.right.y = parseInt(e.pageY - VIEWPORT_OFFSET.y)
-    self.mouse.click.right.x = (self.mouse.click.right.x < 0) ? 0 : ((self.mouse.click.right.x > BOUNDS_VIEWPORT_X) ?  BOUNDS_VIEWPORT_X : self.mouse.click.right.x);
-    self.mouse.click.right.y = (self.mouse.click.right.y < 0) ? 0 : ((self.mouse.click.right.y > BOUNDS_VIEWPORT_Y) ?  BOUNDS_VIEWPORT_Y : self.mouse.click.right.y);
+    self.mouse.click.right.x = parseInt(e.pageX - VIEWPORT_OFFSET.x - self.world.pixel_x)
+    self.mouse.click.right.y = parseInt(e.pageY - VIEWPORT_OFFSET.y - self.world.pixel_y)
+    self.mouse.click.right.x = (self.mouse.click.right.x < 0) ? 0 : self.mouse.click.right.x;
+    self.mouse.click.right.y = (self.mouse.click.right.y < 0) ? 0 : self.mouse.click.right.y;
     self.mouse.click.present = true;
   };
 
@@ -136,16 +148,14 @@ Basalt = function() {
   setInterval(function() {
     var pressed_key_index = self.keys.pressed.length;
     while(pressed_key_index--) {
-      self.unregisterClick();
       if (self.keys[self.keys.pressed[pressed_key_index]]) {
         action = 'self.actions.' + self.keys[self.keys.pressed[pressed_key_index]].action;
         opts = self.keys[self.keys.pressed[pressed_key_index]].opts;
         eval(action)(opts);
       }
     }
-    while(self.mouse.click.present) {
-      if (self.autonav_try_count < MAX_AUTONAV_TRIES) { self.actions.navigateToTap(); } else { self.unregisterClick(); self.autonav_try_count = 0; }
-      self.autonav_try_count++;
+    if (self.mouse.click.present) {
+      self.actions.navigateToTap();
     }
   }, 0);
 

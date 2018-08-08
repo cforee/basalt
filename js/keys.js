@@ -41,6 +41,13 @@ KEYS = {
   },
 };
 
+K = {
+  up: 87,
+  right: 68,
+  down: 83,
+  left: 65
+}
+
 ILLEGAL_COMBOS = [
   [40, 37],
   [40, 39],
