@@ -44,7 +44,7 @@ Basalt = function() {
       var at_target_x = (p.x > (tap.x - MOVE_AMOUNT)) && (p.x < (tap.x + MOVE_AMOUNT));
       var at_target_y = (p.y > (tap.y - MOVE_AMOUNT)) && (p.y < (tap.y + MOVE_AMOUNT));
 
-      // base-case:
+      // base-case: xy target reached
       if (at_target_x && at_target_y) { return self.flushInput(); };
 
       if (!at_target_x) {
@@ -69,7 +69,7 @@ Basalt = function() {
             self.world.move(0, MOVE_AMOUNT);
             self.player.move(0, -MOVE_AMOUNT);
             self.player_step_count++;
-          } else { self.actions.nothing(); }
+          } else { self.flushInput(); }
           break;
         case 'e':
           self.player.setDirection('e');
@@ -77,7 +77,7 @@ Basalt = function() {
             self.world.move(-MOVE_AMOUNT, 0);
             self.player.move(MOVE_AMOUNT, 0);
             self.player_step_count++;
-          } else { self.actions.nothing(); }
+          } else { self.flushInput(); }
           break;
         case 's':
           self.player.setDirection('s');
@@ -85,7 +85,7 @@ Basalt = function() {
             self.world.move(0, -MOVE_AMOUNT);
             self.player.move(0, MOVE_AMOUNT);
             self.player_step_count++;
-          } else { self.actions.nothing(); }
+          } else { self.flushInput(); }
           break;
         case 'w':
           self.player.setDirection('w');
@@ -93,7 +93,7 @@ Basalt = function() {
             self.world.move(MOVE_AMOUNT, 0);
             self.player.move(-MOVE_AMOUNT, 0);
             self.player_step_count++;
-          } else { self.actions.nothing(); }
+          } else { self.flushInput(); }
           break;
       }
       if (self.player_step_count >= SPRITE_FRAME_CYCLE_RATE) {
@@ -123,6 +123,7 @@ Basalt = function() {
   this.flushInput = function() {
     this.keys.pressed = [];
     this.unregisterClick();
+    this.actions.nothing();
     return true;
   }
 
