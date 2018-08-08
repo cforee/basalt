@@ -48,15 +48,13 @@ Basalt = function() {
       if (at_target_x && at_target_y) { return self.flushInput(); };
 
       if (!at_target_x) {
-        // get to target x-axis
-        if (p.x < tap.x) { return self.registerKeypress(K.right); };
-        if (p.x > tap.x) { return self.registerKeypress(K.left); };
+        // get in alignment with x-axis
+        (p.x <= tap.x) ? self.registerKeypress(K.right) : self.registerKeypress(K.left);
       }
 
       if (!at_target_y) {
-        // get to target y-axis
-        if (p.y > tap.y) { return self.registerKeypress(K.up); };
-        if (p.y < tap.y) { return self.registerKeypress(K.down); };
+        // get in alignment with y-axis
+        (p.y >= tap.y) ? self.registerKeypress(K.up) : self.registerKeypress(K.down);
       }
 
     },
