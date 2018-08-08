@@ -17,26 +17,26 @@ Sprite = function(name, sprite_path, num_frames) {
     this.SPRITE_PATH = this.SPRITE_PATH || sprite_path;
     this.FRAMES_END = this.FRAMES_END || num_frames;
     this.$elem = $('<img class="sprite _' + name + '"/>').appendTo($app);
-    this.center_to_viewport();
-    this.cycle_frames();
+    this.centerToViewport();
+    this.cycleFrames();
   }
 
-  this.get_frame_path = function() {
+  this.getFromPath = function() {
     return (this.SPRITE_PATH + this.direction + '_00' + this.frame_num + '0.' + this.SPRITE_FILE_EXTENSION);
   }
 
-  this.cycle_frames = function() {
+  this.cycleFrames = function() {
     if (this.frame_num > this.FRAMES_END) { this.frame_num = this.FRAMES_START };
-    this.$elem.attr('src', this.get_frame_path());
+    this.$elem.attr('src', this.getFromPath());
     this.frame_num++;
   }
 
-  this.reset_frames = function() {
+  this.resetFrames = function() {
     this.frame_num = this.FRAMES_START;
-    this.$elem.attr('src', this.get_frame_path());
+    this.$elem.attr('src', this.getFromPath());
   }
 
-  this.center_to_viewport = function() {
+  this.centerToViewport = function() {
     var pixel_x = ($app.innerWidth() / 2) - (BLOCK_WIDTH / 2);
     var pixel_y = ($app.innerHeight() / 2) - (BLOCK_HEIGHT / 2);
     var relative_position = $('.map').position();
@@ -45,21 +45,21 @@ Sprite = function(name, sprite_path, num_frames) {
     this.$elem.css({ left: pixel_x, top: pixel_y });
   }
 
-  this.get_viewport_offset = function() {
+  this.getViewportOffset = function() {
     var eo = this.$elem.offset();
     return { x: parseInt(eo.left - BLOCK_WIDTH), y: parseInt(eo.top - (BLOCK_HEIGHT / 2)) }
   }
 
-  this.set_direction = function(direction) {
+  this.setDirection = function(direction) {
     this.direction = direction;
   }
 
-  this.set_block = function() {
+  this.setBlock = function() {
     this.block_x = parseInt(this.relative_pixel_x / BLOCK_WIDTH);
     this.block_y = parseInt(this.relative_pixel_y / BLOCK_HEIGHT);
   }
 
-  this.is_collision = function(distance_x, distance_y) {
+  this.isCollision = function(distance_x, distance_y) {
     var temp_pixel_x = this.relative_pixel_x + distance_x;
     var temp_pixel_y = this.relative_pixel_y + distance_y;
     var block_x1 = parseInt((temp_pixel_x + (MOVE_AMOUNT / 2)) / BLOCK_WIDTH);
@@ -82,10 +82,9 @@ Sprite = function(name, sprite_path, num_frames) {
   }
 
   this.move = function(distance_x, distance_y) {
-    console.log("MOVING PLAYER!!");
     this.relative_pixel_x += distance_x;
     this.relative_pixel_y += distance_y;
-    this.set_block();
+    this.setBlock();
   }
 
 };

@@ -63,7 +63,7 @@ World = function(map_name) {
       }
     });
     BOUNDS_BLOCK_Y = ENTITY_MAP.length - 1;
-    self.center_to_viewport();
+    self.centerToViewport();
   };
 
   this.redraw = function() {
@@ -73,7 +73,7 @@ World = function(map_name) {
     });
   }
 
-  this.center_to_viewport = function() {
+  this.centerToViewport = function() {
     this.pixel_x = ($(window).innerWidth() / 2) - (self.MAP_PIXEL_WIDTH / 2) - (BLOCK_WIDTH / 2);
     this.pixel_y = ($(window).innerHeight() / 2) - (self.MAP_PIXEL_HEIGHT / 2);
     this.redraw();
