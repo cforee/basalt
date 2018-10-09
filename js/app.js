@@ -27,7 +27,7 @@ Basalt = function() {
   this.world = new World('starting_area');
   this.keys = $.extend(KEYS, { pressed: [] });
   this.autonav_try_count = 0;
-  this.mouse = { click: { present: false, right: { x: null, y: null } } };
+  this.mouse = { click: { present: false, type: '', left: { x: null, y: null }, right: { x: null, y: null } } };
   this.player_step_count = 0;
 
   this.actions = {
@@ -37,9 +37,9 @@ Basalt = function() {
       self.player.resetFrames();
     },
 
-    navigateToTap: function() {
+    navigateToTap: function(x, y) {
       var p = { x: self.player.relative_pixel_x, y: self.player.relative_pixel_y };
-      var tap = { x: self.mouse.click.right.x - (BLOCK_WIDTH / 2), y: self.mouse.click.right.y - (BLOCK_HEIGHT / 2) };
+      var tap = { x: x - (BLOCK_WIDTH / 2), y: y - (BLOCK_HEIGHT / 2) };
 
       var at_target_x = (p.x > (tap.x - MOVE_AMOUNT)) && (p.x < (tap.x + MOVE_AMOUNT));
       var at_target_y = (p.y > (tap.y - MOVE_AMOUNT)) && (p.y < (tap.y + MOVE_AMOUNT));
@@ -57,6 +57,10 @@ Basalt = function() {
         (p.y >= tap.y) ? self.registerKeypress(K.up) : self.registerKeypress(K.down);
       }
 
+    },
+
+    showEntityDialog: function() {
+      self.flushInput();
     },
 
     move: function(opts) {
@@ -126,11 +130,13 @@ Basalt = function() {
   }
 
   this.registerClick = function(e) {
+    e.preventDefault();
+    ct = self.mouse.click.type = (e.which === 1) ? 'left' : 'right';
     self.mouse.click.present = false;
-    self.mouse.click.right.x = parseInt(e.pageX - VIEWPORT_OFFSET.x - self.world.pixel_x)
-    self.mouse.click.right.y = parseInt(e.pageY - VIEWPORT_OFFSET.y - self.world.pixel_y)
-    self.mouse.click.right.x = (self.mouse.click.right.x < 0) ? 0 : self.mouse.click.right.x;
-    self.mouse.click.right.y = (self.mouse.click.right.y < 0) ? 0 : self.mouse.click.right.y;
+    self.mouse.click[ct].x = parseInt(e.pageX - VIEWPORT_OFFSET.x - self.world.pixel_x)
+    self.mouse.click[ct].y = parseInt(e.pageY - VIEWPORT_OFFSET.y - self.world.pixel_y)
+    self.mouse.click[ct].x = (self.mouse.click[ct].x < 0) ? 0 : self.mouse.click[ct].x;
+    self.mouse.click[ct].y = (self.mouse.click[ct].y < 0) ? 0 : self.mouse.click[ct].y;
     self.mouse.click.present = true;
   };
 
@@ -154,7 +160,11 @@ Basalt = function() {
       }
     }
     if (self.mouse.click.present) {
-      self.actions.navigateToTap();
+      if (self.mouse.click.type === 'left') {
+        self.actions.navigateToTap(self.mouse.click.left.x, self.mouse.click.left.y);
+      } else {
+        self.actions.showEntityDialog();
+      }
     }
   }, 0);
 

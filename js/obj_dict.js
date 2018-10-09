@@ -46,6 +46,14 @@ OBJ = {
     background_image: '',
     walkable: false,
     taklable: false
+  },
+  'Q': {
+    name: 'red dot',
+    asset: '',
+    background_color: '#880000',
+    background_image: 'player/ne_0020.png',
+    walkable: true,
+    talkable: false
   }
 
 }
