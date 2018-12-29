@@ -29,6 +29,7 @@ Basalt = function() {
   this.autonav_try_count = 0;
   this.mouse = { click: { present: false, type: '', left: { x: null, y: null }, right: { x: null, y: null } } };
   this.player_step_count = 0;
+  this.dialog_visible = false;
 
   this.actions = {
     nothing: function() {
@@ -60,6 +61,10 @@ Basalt = function() {
     },
 
     showEntityDialog: function() {
+      self.$overlay_container = $('<div class="overlay_container"></div>').appendTo($app);
+      self.$overlay_buttons = $('<div class="buttons"></div>').appendTo(self.$overlay_container);
+      self.$close_button = $('<div class="close"></div>').appendTo(self.$overlay_buttons);
+      self.dialog_visible = true;
       self.flushInput();
     },
 
@@ -161,7 +166,11 @@ Basalt = function() {
     }
     if (self.mouse.click.present) {
       if (self.mouse.click.type === 'left') {
-        self.actions.navigateToTap(self.mouse.click.left.x, self.mouse.click.left.y);
+        if (self.dialog_visible) {
+          console.log("dialog click");
+        } else {
+          self.actions.navigateToTap(self.mouse.click.left.x, self.mouse.click.left.y);
+        }
       } else {
         self.actions.showEntityDialog();
       }

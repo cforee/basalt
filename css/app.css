@@ -69,3 +69,35 @@ app .map .entities .block {
   background-repeat: no-repeat;
   background-size: 55px 55px;
 }
+
+app .overlay_container {
+  display: block;
+  position: absolute;
+  z-index: 10000;
+  width: 50%;
+  height: 40%;
+  background: #000000;
+  left: 50%;
+  margin-top: 20%;
+  margin-left: -25%;
+}
+
+app .overlay_container .buttons {
+  position: relative;
+  display: inline-block;
+  float: right;
+  border: 1px solid red;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+app .overlay_container .buttons .close {
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+  font-weight: 100;
+}
+
+app .overlay_container .buttons .close:before {
+  content: "\2573";
+}
