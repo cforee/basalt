@@ -27,20 +27,51 @@ Basalt = function() {
   this.world = new World('starting_area');
   this.keys = $.extend(KEYS, { pressed: [] });
   this.autonav_try_count = 0;
-  this.mouse = { click: { present: false, type: '', left: { x: null, y: null }, right: { x: null, y: null } } };
+  this.mouse = {
+    click: {
+      present: false,
+      type: '',
+      left: {
+        x: null,
+        y: null
+      },
+      right: {
+        x: null,
+        y: null
+      }
+    }
+  };
   this.player_step_count = 0;
   this.dialog_visible = false;
 
   this.actions = {
-    nothing: function() {
-      // default action whewn no
-      // action key is depressed
+    none: function() {
+      // no action key is depressed
       self.player.resetFrames();
+
     },
 
     navigateToTap: function(x, y) {
-      var p = { x: self.player.relative_pixel_x, y: self.player.relative_pixel_y };
-      var tap = { x: x - (BLOCK_WIDTH / 2), y: y - (BLOCK_HEIGHT / 2) };
+      nav_path = self.findPath(
+        self.player.block_x,
+        self.player.block_y,
+        parseInt(x / BLOCK_WIDTH),
+        parseInt(y / BLOCK_HEIGHT)
+      );
+
+
+
+
+      // DEPRECATED BUT KEEP FOR NOW
+      var p = {
+        x: self.player.relative_pixel_x,
+        y: self.player.relative_pixel_y
+      };
+      var tap = {
+
+        x: x - (BLOCK_WIDTH / 2),
+        y: y - (BLOCK_HEIGHT / 2)
+      };
 
       var at_target_x = (p.x > (tap.x - MOVE_AMOUNT)) && (p.x < (tap.x + MOVE_AMOUNT));
       var at_target_y = (p.y > (tap.y - MOVE_AMOUNT)) && (p.y < (tap.y + MOVE_AMOUNT));
@@ -48,15 +79,11 @@ Basalt = function() {
       // base-case: xy target reached
       if (at_target_x && at_target_y) { return self.flushInput(); };
 
-      if (!at_target_x) {
-        // get in alignment with x-axis
-        (p.x <= tap.x) ? self.registerKeypress(K.right) : self.registerKeypress(K.left);
-      }
-
-      if (!at_target_y) {
-        // get in alignment with y-axis
-        (p.y >= tap.y) ? self.registerKeypress(K.up) : self.registerKeypress(K.down);
-      }
+      // move to get into alignment with target x and y axes
+      if (!at_target_x) { (p.x <= tap.x) ?
+        self.registerKeypress(K.right) : self.registerKeypress(K.left); }
+      if (!at_target_y) { (p.y >= tap.y) ?
+        self.registerKeypress(K.up) : self.registerKeypress(K.down); }
 
     },
 
@@ -65,7 +92,9 @@ Basalt = function() {
       self.$overlay_buttons = $('<div class="buttons"></div>').appendTo(self.$overlay_container);
       self.$close_button = $('<div class="close"></div>').appendTo(self.$overlay_buttons);
       self.dialog_visible = true;
+      self.unregisterClick();
       self.flushInput();
+
     },
 
     move: function(opts) {
@@ -108,29 +137,59 @@ Basalt = function() {
         self.player_step_count = 0;
       }
     },
-  };
+  }
+
+  this.findPath = function(x1, y1, x2, y2) {
+    // console.log(x1, y1);
+    // console.log(x2, y2);
+    let unvisited_nodes = [];
+    let visited_nodes = [];
+    let PAD = 5;
+
+    // construct bounding box which encompasses
+    // x,y locations for both player and target
+    bounding_box = {
+      x1: (x1 < x2) ? x1 - PAD : x2 - PAD,
+      y1: (y1 < y2) ? y1 - PAD : y2 - PAD,
+      x2: (x1 < x2) ? x2 + PAD : x1 + PAD,
+      y2: (y1 < y2) ? y2 + PAD : y1 + PAD
+    };
+    bounding_box.x1 = (bounding_box.x1 < 0) ? 0 : bounding_box.x1;
+    bounding_box.y1 = (bounding_box.y1 < 0) ? 0 : bounding_box.y1;
+    bounding_box.x2 = (bounding_box.x2 > BOUNDS_BLOCK_X) ?
+      BOUNDS_BLOCK_X : bounding_box.x2;
+    bounding_box.y2 = (bounding_box.y2 > BOUNDS_BLOCK_Y) ?
+      BOUNDS_BLOCK_Y : bounding_box.y2;
+
+
+
+  }
 
   this.registerKeypress = function(key_code) {
     for (var i = 0; i < ILLEGAL_COMBOS_LEN; i++) {
       this_combo = ILLEGAL_COMBOS[i];
-      if (this.keys.pressed.indexOf(this_combo[0]) && (target_index = this.keys.pressed.indexOf(this_combo[1]))) {
+      if (this.keys.pressed.indexOf(this_combo[0]) &&
+        (target_index = this.keys.pressed.indexOf(this_combo[1]))) {
         this.keys.pressed.splice(target_index, 1);
       }
     }
-    return ($.inArray(key_code, this.keys.pressed) < 0) ? this.keys.pressed.push(key_code) : false;
-  };
+    return ($.inArray(key_code, this.keys.pressed) < 0) ?
+      this.keys.pressed.push(key_code) : false;
+
+  }
 
   this.unregisterKeypress = function(key_code) {
     while (this.keys.pressed.indexOf(key_code) >= 0) {
       this.keys.pressed.splice(this.keys.pressed.indexOf(key_code), 1);
     }
-    if (this.keys.pressed.length == 0) { this.actions.nothing(); }
-  };
+    if (this.keys.pressed.length == 0) { this.actions.none(); }
+
+  }
 
   this.flushInput = function() {
     this.keys.pressed = [];
     this.unregisterClick();
-    this.actions.nothing();
+    this.actions.none();
     return true;
   }
 
@@ -143,7 +202,7 @@ Basalt = function() {
     self.mouse.click[ct].x = (self.mouse.click[ct].x < 0) ? 0 : self.mouse.click[ct].x;
     self.mouse.click[ct].y = (self.mouse.click[ct].y < 0) ? 0 : self.mouse.click[ct].y;
     self.mouse.click.present = true;
-  };
+  }
 
   this.unregisterClick = function() {
     self.mouse.click.present = false;
@@ -159,7 +218,8 @@ Basalt = function() {
     var pressed_key_index = self.keys.pressed.length;
     while(pressed_key_index--) {
       if (self.keys[self.keys.pressed[pressed_key_index]]) {
-        action = 'self.actions.' + self.keys[self.keys.pressed[pressed_key_index]].action;
+        action = 'self.actions.' + self.keys[self.keys.pressed[pressed_key_index]]
+          .action;
         opts = self.keys[self.keys.pressed[pressed_key_index]].opts;
         eval(action)(opts);
       }
@@ -169,7 +229,10 @@ Basalt = function() {
         if (self.dialog_visible) {
           console.log("dialog click");
         } else {
-          self.actions.navigateToTap(self.mouse.click.left.x, self.mouse.click.left.y);
+          self.actions.navigateToTap(
+            self.mouse.click.left.x,
+            self.mouse.click.left.y
+          );
         }
       } else {
         self.actions.showEntityDialog();
