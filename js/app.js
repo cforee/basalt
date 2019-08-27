@@ -85,12 +85,18 @@ Basalt = function() {
       if (!at_target_y) { (p.y >= tap.y) ?
         self.registerKeypress(K.up) : self.registerKeypress(K.down); }
 
+      self.flushInput();
+      self.unregisterClick();
+
     },
 
     showEntityDialog: function() {
-      self.$overlay_container = $('<div class="overlay_container"></div>').appendTo($app);
-      self.$overlay_buttons = $('<div class="buttons"></div>').appendTo(self.$overlay_container);
-      self.$close_button = $('<div class="close"></div>').appendTo(self.$overlay_buttons);
+      self.$overlay_container = $('<div class="overlay_container"></div>')
+        .appendTo($app);
+      self.$overlay_buttons = $('<div class="buttons"></div>')
+        .appendTo(self.$overlay_container);
+      self.$close_button = $('<div class="close"></div>')
+        .appendTo(self.$overlay_buttons);
       self.dialog_visible = true;
       self.unregisterClick();
       self.flushInput();
@@ -161,7 +167,25 @@ Basalt = function() {
     bounding_box.y2 = (bounding_box.y2 > BOUNDS_BLOCK_Y) ?
       BOUNDS_BLOCK_Y : bounding_box.y2;
 
+    // calculate total x + y distance
+    // from target node
+    for (var row = bounding_box.y1; row < bounding_box.y2; row++) {
+      for (var col = bounding_box.x1; col < bounding_box.x2; col++) {
+        unvisited_nodes.push({
+          name: col + '_' + row,
+          block_x: col,
+          block_y: row,
+          distance_score: Math.abs(col - x2) + Math.abs(row - y2)
+        })
+      }
+    }
 
+    // sort nodes by total x + y
+    // distance from target node
+    unvisited_nodes = unvisited_nodes
+      .sort((a, b) => (a.distance_score > b.distance_score) ? 1 : -1);
+
+    console.log(unvisited_nodes);
 
   }
 

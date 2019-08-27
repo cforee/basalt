@@ -36,7 +36,7 @@ World = function(map_name) {
           for (var x = 0; x < rows[y].length; x++) {
             var block = OBJ[rows[y][x]];
             if (block) {
-              $terrain.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/terrain/' + block.background_image + ');"></div>');
+              $terrain.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/terrain/' + block.background_image + ');">' + x + ',' + y + '</div>');
             }
           }
         }
