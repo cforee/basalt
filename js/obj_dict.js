@@ -28,7 +28,7 @@ OBJ = {
     asset: '',
     background_color: 'transparent',
     background_image: 'tree_0010.png',
-    walkable: true,
+    walkable: false,
     taklable: false
   },
   'v': {

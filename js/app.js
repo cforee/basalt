@@ -183,7 +183,10 @@ Basalt = function() {
     // sort nodes by total x + y
     // distance from target node
     unvisited_nodes = unvisited_nodes
-      .sort((a, b) => (a.distance_score > b.distance_score) ? 1 : -1);
+      .sort((a, b) => (a.distance_score < b.distance_score) ? 1 : -1);
+
+    var starting_index = unvisited_nodes.findIndex(p => p.name == String(x1 + '_' + y1));
+    console.log('starting index: ' + starting_index);
 
     console.log(unvisited_nodes);
 

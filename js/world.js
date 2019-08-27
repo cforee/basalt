@@ -36,7 +36,12 @@ World = function(map_name) {
           for (var x = 0; x < rows[y].length; x++) {
             var block = OBJ[rows[y][x]];
             if (block) {
-              $terrain.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/terrain/' + block.background_image + ');">' + x + ',' + y + '</div>');
+              $terrain.append('<div class="block ' + '_' +
+                block.name +
+                '" style="background-image: url(/assets/terrain/' +
+                block.background_image + ');">' +
+                x + ',' + y +
+                '</div>');
             }
           }
         }
@@ -54,7 +59,11 @@ World = function(map_name) {
             var block = OBJ[rows[y][x]];
             m_row.push(block);
             if (block) {
-              $entities.append('<div class="block ' + '_' + block.name + '" style="background-image: url(/assets/entities/' + block.background_image + '); background-color: ' + block.background_color + ';"></div>');
+              $entities.append('<div class="block ' + '_' +
+                block.name +
+                '" style="background-image: url(/assets/entities/' +
+                block.background_image + '); background-color: ' +
+                block.background_color + ';"></div>');
             }
           }
           BOUNDS_BLOCK_X = m_row.length;
